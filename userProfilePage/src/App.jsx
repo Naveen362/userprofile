@@ -7,6 +7,7 @@ import FavoriteTopics from './FavoriteTopics'
 import RecentPosts from './RecentPosts'
 import { Route, Routes } from 'react-router-dom'
 import UpdateFavoriteTopics from './UpdateFavorite'
+import SinglePost from './SinglePost'
 
 function App() {
   const [count, setCount] = useState({bg:"white",text:"black"})
@@ -22,6 +23,7 @@ function App() {
     <Routes>
       <Route path="/" element={<div><Bio/><FavoriteTopics/><RecentPosts/></div>}/>
       <Route path="/getpostdata" element={<UpdateFavoriteTopics/>}></Route>
+      <Route path="/posts/:id" element={<SinglePost/>}/>
     </Routes>
     </div>
   )

@@ -56,6 +56,37 @@ app.get('/posts', async (req, res) => {
     res.status(500).send("Error fetching posts");
   }
 });
+app.get('/posts/:id',async (req,res)=>{
+  try{
+    const id=req.params.id;
+    const db=mongoclient.db("userprofile");
+    const collection=db.collection("posts");
+    const data=await collection.findOne({ _id:new ObjectId(id)});
+    res.status(200).json(data);
+    console.log(data);
+  }
+  catch(err){
+    console.error("Error fetching posts", err);
+    res.status(500).send("Error fetching posts");
+  }
+})
+
+// app.put('/post/:id',async (req,res)=>{
+//   try {
+//        const id=req.params.id;
+//        console.log(id,req.body)
+//        const db=mongoclient.db("userprofile");
+//        const collection=db.collection("posts");
+//        res.status(200);
+//       //  const data=await collection.updateOne({_id:new ObjectId(id)},{$set:req.body});
+//       //  console.log(data)
+//       //  res.status(200).json(data);
+//   }
+//   catch(error){
+//     console.error("Error fetching posts");
+//     res.status(500).send("Error fetching posts");
+//   }
+// })
 
 app.put('/biodata/:id', async (req, res) => {
   try {
@@ -75,13 +106,13 @@ app.put('/biodata/:id', async (req, res) => {
 
 app.put('/datas', async (req, res) => {
     try {
+      console.log(req.body)
       const db = mongoclient.db("userprofile");
       const collection = db.collection("data");
-  
-      const updateResult = await collection.updateMany(
-        {}, 
-        { $set: req.body }
-      );
+      await collection.deleteMany({});
+     
+      const updateResult = await collection.insertMany(req.body)
+      
   
       res.json(updateResult);
     } catch (err) {
@@ -91,21 +122,33 @@ app.put('/datas', async (req, res) => {
   });
   
 
-app.put('/posts/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-    const db = mongoclient.db("userprofile");
-    const collection = db.collection("posts");
-    const updateResult = await collection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: req.body }
-    );
-    res.json(updateResult);
-  } catch (err) {
-    console.error("Error updating posts data", err);
-    res.status(500).send("Error updating data");
-  }
+  app.put('/posts1/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const db = mongoclient.db("userprofile");
+        const collection = db.collection("posts");
+
+        // Exclude _id from the update operation
+        const { _id, ...updateData } = req.body;
+
+        const updateResult = await collection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: updateData }
+        );
+
+        if (updateResult.modifiedCount > 0) {
+            res.status(200).send({ ok: true });
+        } else {
+            res.status(404).send("Post not found or no changes detected.");
+        }
+    } catch (err) {
+        console.error("Error updating post:", err);
+        res.status(500).send("Error updating post.");
+    }
 });
+
+
+  
 
 app.listen(4000, () => {
   console.log("Server running on port 4000");

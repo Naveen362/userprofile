@@ -1,15 +1,13 @@
 
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const RecentPosts = () => {
-  const posts = [
-    { title: "Understanding React Hooks", date: "Jan 1, 2025" },
-    { title: "Bootstrap 5: What's New?", date: "Dec 25, 2024" },
-    { title: "MERN Stack Tutorial for Beginners", date: "Dec 20, 2024" },
-    { title: "Advanced CSS Techniques", date: "Dec 15, 2024" },
-    { title: "Node.js Basics and Deployment", date: "Dec 10, 2024" },
-  ];
-
+  const [posts,setPosts]=useState([]);
+  useEffect(()=>{
+    axios.get("http://localhost:4000/posts").then((res)=>{setPosts(res.data);console.log(res.data)}).catch((error)=>{alert("Servor Error")});
+  },[])
   return (
     <div className="container my-5">
       <div className="card shadow-sm" >
@@ -19,10 +17,12 @@ const RecentPosts = () => {
         <div className="card-body">
           <ul className="list-group list-group-flush">
             {posts.map((post, index) => (
-              <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-                <span>{post.title}</span>
-                <span className="text-muted">{post.date}</span>
-                <span ><button className='btn'><i className="bi bi-pencil"></i> Edit</button></span>
+              <li key={index} className="mt-3 shadow-sm list-group-item d-flex flex-column justify-content-between align-items-center">
+                <h3>{post.title}</h3>
+                <hr/>
+                <p>{post.description}</p>
+                <span className="text-muted">Date-Of-Posted: {post.date}</span>
+                <span ><Link to={`/posts/${post._id}`}><button className='btn'><i className="bi bi-pencil"></i> Edit</button></Link></span>
               </li>
             ))}
           </ul>

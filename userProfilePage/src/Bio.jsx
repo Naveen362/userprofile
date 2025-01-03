@@ -11,7 +11,7 @@ const Bio = () => {
     axios.get("http://localhost:4000/bio")
       .then((res) => setData(res.data))
       .catch((err) => console.log("error"));
-  }, [data]);
+  }, []);
 
   const handleColorChange = (color) => {
     setBtnColor(color);
@@ -27,7 +27,7 @@ const Bio = () => {
 
   const updatedata = () => {
     if (data._id) {
-      axios.put(`http://localhost:4000/biodata/${data._id}`, { self: data.self })
+      axios.put(`http://localhost:4000/biodata/${data. _id}`, { self: data.self })
         .then((res) => alert("Data Modified"))
         .catch((err) => console.log("error"));
     } else {
