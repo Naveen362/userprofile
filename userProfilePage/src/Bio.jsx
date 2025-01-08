@@ -10,7 +10,7 @@ const Bio = () => {
   useEffect(() => {
     axios.get("http://localhost:4000/bio")
       .then((res) => setData(res.data))
-      .catch((err) => console.log("error"));
+      .catch((error) => console.log("error"));
   }, []);
 
   const handleColorChange = (color) => {
